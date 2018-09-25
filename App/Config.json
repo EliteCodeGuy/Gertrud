@@ -1,0 +1,6 @@
+{
+    "App-Name"        : "Web",
+    "CONTROLLER_NAME" : "Site",
+    "METHOD_NAME"     : "Page",
+    "VIEW_NAME"       : "Inicio"
+}
