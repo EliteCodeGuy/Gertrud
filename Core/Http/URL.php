@@ -4,37 +4,46 @@ namespace Core\Http
 {
     class URL
     {
-        public $defaultServerConfig;
+        protected $appDir;
+        protected $viewDir;
+        protected $controllerDir;
+        protected $viewMethodDir;
+        protected $urlControllerName;
+        protected $urlMethodName;
+        protected $urlParam;
+
+        protected function urlAppDirections( $urlArray )
+        {
+            $this->urlControllerName = $urlArray[ 'Controller' ];
+            $this->urlMethodName = $urlArray[ 'Method' ];
+            $this->urlParam = $urlArray[ 'View' ];
+        }
 
         protected function urlArrayFormat( $url )
-        {
-            $defaultUrlArray = array( 'Controller' => $this->defaultServerConfig[ 'CONTROLLER_NAME' ], 
-                                         'Method'  => $this->defaultServerConfig[ 'METHOD_NAME' ], 
-                                           'View'  => $this->defaultServerConfig[ 'VIEW_NAME' ] );
+        { 
+            $defaultUrlArray = array( 'Controller' => $this->defaultAppStructure[ 'CONTROLLER_DEFAULT_NAME' ], 
+                                         'Method'  => $this->defaultAppStructure[ 'METHOD_DEFAULT_NAME' ], 
+                                           'View'  => $this->defaultAppStructure[ 'VIEW_DEFAULT_NAME' ] );
 
             if(!empty($url))
             {
-              $this->defaultServerConfig = getConfigJsonArray();
-
                 $urlArray = $this->urlSplit( $url );
 
                 $numberOfComponents = $this->countComponents( $urlArray );
 
                 $structure = $this->urlStructure( $numberOfComponents );
 
-                    foreach ($urlArray as $componentPosition => $componentName) {
+                    foreach ($urlArray as $componentPosition => $componentName)
+                    {
                         $defaultUrlArray[ $structure[ $componentPosition ] ] = $this->urlParamFormat( $componentName );
                     }
             }
 
-          return $defaultUrlArray;
+        return $defaultUrlArray;
         }
 
         protected function urlParamFormat( $urlString )
         {
-            $firstPosition = 0;
-            $secondPosition = 1;
-
             $conditionExist = substr_count( $urlString, '~' );
 
             if($conditionExist == 1)
@@ -50,6 +59,9 @@ namespace Core\Http
 
         protected function urlConditionFormat( $urlString )
         {
+            $firstPosition = 0;
+            $secondPosition = 1;
+
             /* 
             *   Ejemplo de URL:
             *      + http://ares.x/admin/Edit/view-xxx-xx~ParamY
@@ -68,12 +80,12 @@ namespace Core\Http
             *            admin/Edit/View~ParamY
             */
 
-            return ucfirst( strtolower( $urlViewParamArray[ $firstPosition ] ) ) . $condition;
+        return ucfirst( strtolower( $urlViewParamArray[ $firstPosition ] ) ) . $condition;
         }
 
         protected function urlSegmentFormat( $urlString )
         {
-            $firstPosition = 1;
+            $firstPosition = 0;
             
             $conditionExist = substr_count( $urlString, '-' );
 
@@ -88,15 +100,11 @@ namespace Core\Http
                 $urlSegmentFormat = ucfirst( strtolower( $urlString ) );
             }
             
-            return $urlSegmentFormat;
+        return $urlSegmentFormat;
         }
 
         private function urlStructure( $numberOfComponents )
         {
-            /* 
-            *   Aqui solo se Clasifica la informacion Existente en la URL
-            */
-
             switch ( $numberOfComponents )
             {
                 case 2:
@@ -151,7 +159,7 @@ namespace Core\Http
 
         private function countComponents( $urlArray )
         {
-            return count( $urlArray );
+        return count( $urlArray );
         }
 
     }

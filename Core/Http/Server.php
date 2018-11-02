@@ -7,17 +7,9 @@ namespace Core\Http
 
     Class Server Extends URL
     {
-        protected $appDir;
-        protected $viewDir;
-        protected $controllerDir;
-        protected $viewMethodDir;
         protected $formData;
         protected $httpMethod;
-
-        protected $urlControllerName;
-        protected $urlMethodName;
-        protected $urlParam;
-
+        protected $defaultAppStructure;
         protected $responseControllerDir;
         protected $responseMethodName;
 
@@ -25,12 +17,16 @@ namespace Core\Http
 
         public function __construct()
         {
-            $this->defaultServerConfig = getConfigJsonArray();
-            
-            $this->appDir = 'App'. SLASH . $this->defaultServerConfig['App-Name'] . SLASH;
-            
+            $this->saveConfigServerDirections();
+        }
+
+        protected function saveConfigServerDirections()
+        {
+            $defaultServerConfig = getConfigJsonArray('defaultApp');
+            $this->defaultAppStructure = getConfigJsonArray( 'defaultApp', 'AppStructure' );
+
+            $this->appDir = 'App'. SLASH . $defaultServerConfig[ 'Name' ] . SLASH;
             $this->viewDir = $this->appDir . 'Views' . SLASH;  
-            
             $this->controllerDir = $this->appDir . 'Controllers' . SLASH;
         }
 
@@ -42,19 +38,17 @@ namespace Core\Http
 
             $urlActual = $this->urlArrayFormat( $get );
 
-            $this->urlControllerName = $urlActual[ 'Controller' ];
-            $this->urlMethodName = $urlActual[ 'Method' ];
-            $this->urlParam = $urlActual[ 'View' ];
+            $this->urlAppDirections( $urlActual );
 
-          if( $httpMethod == 'POST' )
-          {
-              $this->formData  = $this->postFilter( @$_POST['data'] );
-          }
+                if( $httpMethod == 'POST' )
+                {
+                    $this->formData  = $this->postDataFilter( @$_POST['package'] );
+                }
         }
 
         public function Response()
         {
-            $responseName = 'response' . $this->urlParamFormat( $this->httpMethod ) . 'Request';
+            $responseName = 'response' . $this->urlSegmentFormat( $this->httpMethod ) . 'Request';
 
             if( $this->httpMethod == 'POST' )
             {

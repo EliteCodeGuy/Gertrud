@@ -28,7 +28,7 @@ namespace Core\Database
         return $result;
         }
 
-        public function importData( $cleanInputArray )
+        public function insertData( $cleanInputArray )
         {
             $result = $this->database->insert( $cleanInputArray['table_name'], $cleanInputArray['data']  );
         }

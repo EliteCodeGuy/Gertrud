@@ -1,6 +1,11 @@
 {
-    "App-Name"        : "Web",
-    "CONTROLLER_NAME" : "Site",
-    "METHOD_NAME"     : "Page",
-    "VIEW_NAME"       : "Inicio"
+    "defaultApp":
+    { "Name" : "Web",
+        "AppStructure":
+        {
+            "CONTROLLER_DEFAULT_NAME" : "Site",
+            "METHOD_DEFAULT_NAME"     : "Page",
+            "VIEW_DEFAULT_NAME"       : "Inicio"
+        }
+    }
 }
